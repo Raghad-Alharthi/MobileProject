@@ -25,13 +25,30 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    // Updated packagingOptions to exclude LICENSE.md
+    packagingOptions {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/LICENSE.md" // Added previously
+            excludes += "META-INF/NOTICE.md" // Add this line to exclude NOTICE.md
+        }
+    }
 }
 
 dependencies {
+    implementation("com.sendgrid:sendgrid-java:4.9.3")
+    implementation("com.sun.mail:android-mail:1.6.7")
+    implementation("com.sun.mail:android-activation:1.6.7")
 
     implementation(libs.appcompat)
     implementation(libs.material)
