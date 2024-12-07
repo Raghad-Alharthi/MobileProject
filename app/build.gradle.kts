@@ -49,11 +49,15 @@ dependencies {
     implementation("com.sendgrid:sendgrid-java:4.9.3")
     implementation("com.sun.mail:android-mail:1.6.7")
     implementation("com.sun.mail:android-activation:1.6.7")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+
 
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.play.services.maps)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

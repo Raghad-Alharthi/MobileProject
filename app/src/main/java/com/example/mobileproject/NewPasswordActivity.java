@@ -8,11 +8,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mobileproject.database.DatabaseHelper;
+
 public class NewPasswordActivity extends AppCompatActivity {
 
     private EditText etNewPassword, etConfirmNewPassword;
     private Button btnResetPassword;
-    private UserDatabaseHelper databaseHelper;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +25,7 @@ public class NewPasswordActivity extends AppCompatActivity {
         etConfirmNewPassword = findViewById(R.id.etConfirmNewPassword);
         btnResetPassword = findViewById(R.id.btnResetPassword);
 
-        databaseHelper = new UserDatabaseHelper(this);
+        databaseHelper = new DatabaseHelper(this);
 
         btnResetPassword.setOnClickListener(view -> {
             String newPassword = etNewPassword.getText().toString();

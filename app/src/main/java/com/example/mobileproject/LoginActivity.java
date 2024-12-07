@@ -1,7 +1,9 @@
 package com.example.mobileproject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -9,13 +11,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mobileproject.database.DatabaseHelper;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin;
     private TextView tvSignup;
     private TextView tvForgotPassword;
-    private UserDatabaseHelper databaseHelper;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
 
         // Initialize Database Helper
-        databaseHelper = new UserDatabaseHelper(this);
+        databaseHelper = new DatabaseHelper(this);
 
         // Login Button Click Listener
         btnLogin.setOnClickListener(view -> {
@@ -48,6 +52,15 @@ public class LoginActivity extends AppCompatActivity {
                 String role = databaseHelper.getUserRole(email);
 
                 if (storedPassword != null && storedPassword.equals(hashedPassword)) {
+                    int userId = databaseHelper.getUserIdByEmail(email);
+
+                    // Save User ID in SharedPreferences
+                    SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("user_id", userId);
+                    editor.apply();
+                    Log.d("LoginActivity", "Saved user_id: " + userId);
+
                     if ("admin".equals(role)) {
                         // Redirect to Admin Homepage
                         Toast.makeText(LoginActivity.this, "Admin Login Successful", Toast.LENGTH_SHORT).show();

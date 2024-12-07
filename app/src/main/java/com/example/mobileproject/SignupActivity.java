@@ -7,11 +7,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mobileproject.database.DatabaseHelper;
+
 public class SignupActivity extends AppCompatActivity {
 
     private EditText etFullName, etEmail, etPassword, etConfirmPassword;
     private Button btnSignup;
-    private UserDatabaseHelper databaseHelper;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,7 @@ public class SignupActivity extends AppCompatActivity {
         btnSignup = findViewById(R.id.btnSignup);
 
         // Initialize Database Helper
-        databaseHelper = new UserDatabaseHelper(this);
+        databaseHelper = new DatabaseHelper(this);
 
         // Set onClick Listener for Signup Button
         btnSignup.setOnClickListener(view -> {
