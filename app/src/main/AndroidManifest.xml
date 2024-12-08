@@ -46,6 +46,11 @@
         <activity android:name=".NewPasswordActivity" />
         <activity android:name=".VerifyCodeActivity" />
         <activity android:name=".CheckoutActivity" />
+        <activity android:name=".HistoryActivity" />
+        <activity android:name=".EditPlantActivity" />
+        <activity android:name=".AdminManagePlantsActivity" />
+        <activity android:name=".AddPlantActivity" />
+        <activity android:name=".OrderDetailsActivity" />
 
 
         <meta-data

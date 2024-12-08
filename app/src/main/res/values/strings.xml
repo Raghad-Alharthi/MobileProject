@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MobileProject</string>
+    <string-array name="plant_categories">
+        <item>Indoor</item>
+        <item>Outdoor</item>
+    </string-array>
 </resources>

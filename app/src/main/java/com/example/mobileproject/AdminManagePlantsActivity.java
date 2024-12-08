@@ -2,9 +2,7 @@ package com.example.mobileproject;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,26 +15,29 @@ import com.example.mobileproject.models.Plant;
 
 import java.util.List;
 
-public class AdminManageItemsActivity extends AppCompatActivity {
+public class AdminManagePlantsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private AdminPlantAdapter adapter;
     private DatabaseHelper databaseHelper;
-    private TextView emptyStateView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_manage_items);
+        setContentView(R.layout.activity_admin_manage_plants);
+
+        recyclerView = findViewById(R.id.recycler_view);
+        Button addNewPlantButton = findViewById(R.id.btn_add_new_plant);
 
         databaseHelper = new DatabaseHelper(this);
-        recyclerView = findViewById(R.id.recyclerview);
 
+        // Set up RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         loadPlants();
 
-        findViewById(R.id.add_new_item_button).setOnClickListener(view -> {
-            Intent intent = new Intent(AdminManageItemsActivity.this, AddPlantActivity.class);
+        // Navigate to AddPlantActivity
+        addNewPlantButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminManagePlantsActivity.this, AddPlantActivity.class);
             startActivity(intent);
         });
     }
@@ -44,17 +45,17 @@ public class AdminManageItemsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Reload plants when returning to this activity
         loadPlants();
     }
 
     private void loadPlants() {
         List<Plant> plants = databaseHelper.getAllPlants();
-
-        emptyStateView.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
-
         adapter = new AdminPlantAdapter(plants, this, databaseHelper);
         recyclerView.setAdapter(adapter);
 
+        if (plants.isEmpty()) {
+            Toast.makeText(this, "No plants found. Add new plants!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

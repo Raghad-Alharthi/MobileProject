@@ -1,16 +1,22 @@
 package com.example.mobileproject;
 
 import android.os.Bundle;
-import android.view.View;
+import android.text.TextUtils;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.mobileproject.database.DatabaseHelper;
 import com.example.mobileproject.models.Plant;
 
 public class EditPlantActivity extends AppCompatActivity {
 
-    private EditText plantName, plantQuantity, plantPrice, plantCategory;
+    private EditText etPlantName, etPlantDescription, etPlantPrice, etPlantQuantity;
+    private Spinner spinnerCategory;
+    private Button btnSaveChanges;
     private DatabaseHelper databaseHelper;
     private int plantId;
 
@@ -21,38 +27,75 @@ public class EditPlantActivity extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
 
-        plantName = findViewById(R.id.plant_name);
-        plantQuantity = findViewById(R.id.plant_quantity);
-        plantPrice = findViewById(R.id.plant_price);
-        plantCategory = findViewById(R.id.plant_category);
+        // Initialize UI components
+        etPlantName = findViewById(R.id.et_plant_name);
+        etPlantDescription = findViewById(R.id.et_plant_description);
+        etPlantPrice = findViewById(R.id.et_plant_price);
+        etPlantQuantity = findViewById(R.id.et_plant_quantity);
+        spinnerCategory = findViewById(R.id.spinner_category);
+        btnSaveChanges = findViewById(R.id.btn_save_changes);
 
-        // Get Plant ID from Intent
-        plantId = getIntent().getIntExtra("plant_id", -1);
-        if (plantId != -1) {
-            Plant plant = databaseHelper.getPlantById(plantId);
-            if (plant != null) {
-                plantName.setText(plant.getName());
-                plantQuantity.setText(String.valueOf(plant.getQuantityAvailable()));
-                plantPrice.setText(String.valueOf(plant.getPrice()));
-                plantCategory.setText(plant.getCategory());
-            }
+        // Get the plant ID from the intent
+        plantId = getIntent().getIntExtra("plantId", -1);
+        if (plantId == -1) {
+            Toast.makeText(this, "Error: Plant not found!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
-        findViewById(R.id.editbtn).setOnClickListener(view -> {
-            String name = plantName.getText().toString().trim();
-            String quantityStr = plantQuantity.getText().toString().trim();
-            String priceStr = plantPrice.getText().toString().trim();
-            String category = plantCategory.getText().toString().trim();
+        // Load plant details
+        loadPlantDetails();
 
-            if (!name.isEmpty() && !quantityStr.isEmpty() && !priceStr.isEmpty() && !category.isEmpty()) {
-                int quantity = Integer.parseInt(quantityStr);
-                double price = Double.parseDouble(priceStr);
-                databaseHelper.updatePlant(plantId, name, category, price, quantity);
-                Toast.makeText(EditPlantActivity.this, "Plant updated successfully!", Toast.LENGTH_SHORT).show();
-                finish(); // Go back to AdminManageItemsActivity
-            } else {
-                Toast.makeText(EditPlantActivity.this, "Please fill all fields!", Toast.LENGTH_SHORT).show();
+        // Save changes when the button is clicked
+        btnSaveChanges.setOnClickListener(v -> saveChanges());
+    }
+
+    private void loadPlantDetails() {
+        Plant plant = databaseHelper.getPlantById(plantId);
+        if (plant != null) {
+            etPlantName.setText(plant.getName());
+            etPlantDescription.setText(plant.getDescription());
+            etPlantPrice.setText(String.valueOf(plant.getPrice()));
+            etPlantQuantity.setText(String.valueOf(plant.getQuantityAvailable()));
+
+            // Set category in spinner
+            String[] categories = getResources().getStringArray(R.array.plant_categories);
+            for (int i = 0; i < categories.length; i++) {
+                if (categories[i].equalsIgnoreCase(plant.getCategory())) {
+                    spinnerCategory.setSelection(i);
+                    break;
+                }
             }
-        });
+        } else {
+            Toast.makeText(this, "Error: Could not load plant details.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+
+    private void saveChanges() {
+        String name = etPlantName.getText().toString().trim();
+        String description = etPlantDescription.getText().toString().trim();
+        String priceStr = etPlantPrice.getText().toString().trim();
+        String quantityStr = etPlantQuantity.getText().toString().trim();
+        String category = spinnerCategory.getSelectedItem().toString();
+
+        // Validate input
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(priceStr) || TextUtils.isEmpty(quantityStr)) {
+            Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        double price = Double.parseDouble(priceStr);
+        int quantity = Integer.parseInt(quantityStr);
+
+        // Update plant in the database
+        int rowsAffected = databaseHelper.updatePlant(plantId, name, category, price, quantity);
+
+        if (rowsAffected > 0) {
+            Toast.makeText(this, "Plant updated successfully!", Toast.LENGTH_SHORT).show();
+            finish(); // Return to the previous screen
+        } else {
+            Toast.makeText(this, "Failed to update plant. Try again.", Toast.LENGTH_SHORT).show();
+        }
     }
 }
