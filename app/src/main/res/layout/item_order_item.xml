@@ -2,26 +2,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    android:background="#DBD1D1"
+    android:background="#D5CECE"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
     <TextView
-        android:id="@+id/tv_order_id"
+        android:id="@+id/tv_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Order ID"
+        android:text="Item Name"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tv_order_total"
+        android:id="@+id/tv_item_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total" />
+        android:text="Price" />
 
     <TextView
-        android:id="@+id/tv_order_date"
+        android:id="@+id/tv_quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date" />
+        android:text="Quantity" />
 </LinearLayout>

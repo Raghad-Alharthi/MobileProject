@@ -1,109 +1,38 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OrderDetailsActivity">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!-- Order Details -->
-
-    <LinearLayout
-        android:layout_width="328dp"
-        android:layout_height="479dp"
-        android:layout_marginTop="74dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
-
-        <TextView
-            android:id="@+id/tvOrderDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Date: "
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tvOrderTotal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="20dp"
-            android:text="Total: "
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tvOrderItems"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="20dp"
-            android:text="Items: "
-            android:textSize="16sp" />
-
-        <fragment
-            android:id="@+id/map"
-            android:layout_width="match_parent"
-            android:layout_height="250dp" />
-    </LinearLayout>
-
-    <View
-        android:id="@+id/centerView2"
-        android:layout_width="379dp"
-        android:layout_height="694dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginVertical="48dp"
-        android:layout_marginStart="10dp"
-        android:background="#D5FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.498" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="410dp"
+    <TextView
+        android:id="@+id/tv_order_id"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
-        android:background="#D5FFFFFF"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:text="Order ID"
+        android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/backBtn"
-            android:layout_width="66dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="fill"
-            android:background="#D5FFFFFF"
-            android:cropToPadding="false"
-            android:paddingLeft="10dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_back" />
+    <TextView
+        android:id="@+id/tv_order_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="254dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:fontFamily="@font/yantramanav_bold"
-            android:gravity="center"
-            android:paddingTop="8dp"
-            android:text="Order Details"
-            android:textColor="#414536"
-            android:textSize="24sp" />
+    <TextView
+        android:id="@+id/tv_order_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date" />
 
-        <ImageView
-            android:id="@+id/logoImage4"
-            android:layout_width="62dp"
-            android:layout_height="62dp"
-            app:srcCompat="@drawable/img_1" />
-    </LinearLayout>
+    <!-- Map Fragment -->
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="16dp" />
 
-    <!-- Map -->
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_order_items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

@@ -6,11 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -27,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mobileproject.adapters.PlantAdapter;
 import com.example.mobileproject.database.DatabaseHelper;
 import com.example.mobileproject.models.Plant;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +73,7 @@ public class HomeActivity extends AppCompatActivity {
 
         ImageView history = findViewById(R.id.historyIcon);
         history.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, HistoryActivity.class);
+            Intent intent = new Intent(HomeActivity.this, OrdersActivity.class);
             startActivity(intent);
         });
 
