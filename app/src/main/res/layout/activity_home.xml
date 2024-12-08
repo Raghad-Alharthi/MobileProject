@@ -17,8 +17,8 @@
             android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintTop_toBottomOf="parent"
-            app:layout_constraintBottom_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
 
         <!-- Center view -->
 
@@ -63,6 +63,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
 
+
+
         <ImageView
             android:id="@+id/logoImage"
             android:layout_width="120dp"
@@ -79,31 +81,31 @@
             android:id="@+id/middleGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@+id/logoImage"
-            app:layout_constraintStart_toStartOf="parent"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5">
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/logoImage">
 
             <!-- TextView 2 -->
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:text="Indoor Plants"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="8dp" />
+                android:textStyle="bold" />
 
             <!-- Switch -->
             <Switch
                 android:id="@+id/switch2"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
                 android:thumbTint="@color/black"
-                android:trackTint="@color/black"
-                android:layout_marginEnd="8dp" />
+                android:trackTint="@color/black" />
 
             <!-- TextView -->
             <TextView
@@ -126,6 +128,21 @@
             app:layout_constraintHorizontal_bias="0.777"
             app:layout_constraintStart_toStartOf="@+id/centerView"
             app:layout_constraintTop_toBottomOf="@+id/middleGroup" />
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="109dp"
+            android:layout_height="49dp"
+            android:layout_marginHorizontal="32dp"
+            android:backgroundTint="#000000"
+            android:text="Logout"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/centerView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.109" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
