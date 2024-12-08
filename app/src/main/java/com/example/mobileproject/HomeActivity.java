@@ -32,11 +32,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class HomeActivity extends AppCompatActivity {
+
 
     private List<Plant> plantList = new ArrayList<>();
     private PlantAdapter adapter;
     private DatabaseHelper dbHelper;
+    private Button btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +98,15 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(this, "Indoor Plants", Toast.LENGTH_SHORT).show();
             }
             adapter.updatePlants(updatedList); // Update RecyclerView data
+        });
+
+        btnLogout = findViewById(R.id.btnLogout);
+        // Logout Button Click Listener
+        btnLogout.setOnClickListener(view -> {
+            // Redirect to Main Page
+            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish(); // Close the HomeActivity
         });
     }
 
