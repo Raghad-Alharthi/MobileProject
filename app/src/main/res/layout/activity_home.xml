@@ -37,6 +37,19 @@
             app:layout_constraintStart_toEndOf="@+id/logoImage"
             app:srcCompat="@drawable/baseline_shopping_cart_24" />
 
+        <ImageView
+            android:id="@+id/historyIcon"
+            android:layout_width="47dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="75dp"
+            android:layout_marginBottom="112dp"
+            android:translationZ="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/plant_list"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/logoImage"
+            app:srcCompat="@drawable/baseline_history_24" />
+
         <View
             android:id="@+id/centerView"
             android:layout_width="372dp"

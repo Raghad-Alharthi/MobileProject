@@ -33,7 +33,6 @@ public class CartActivity extends AppCompatActivity {
     private CartAdapter cartAdapter;
     private DatabaseHelper databaseHelper;
 
-    private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,6 @@ public class CartActivity extends AppCompatActivity {
 
         // Initialize DatabaseHelper and FusedLocationProviderClient
         databaseHelper = new DatabaseHelper(this);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Retrieve User ID
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
@@ -56,7 +54,7 @@ public class CartActivity extends AppCompatActivity {
         }
 
         // Initialize Views
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.OrderRV);
         tvTotalPrice = findViewById(R.id.tvTotalPrice);
         btnCheckout = findViewById(R.id.btnCheckout);
 
@@ -78,6 +76,7 @@ public class CartActivity extends AppCompatActivity {
         btnCheckout.setOnClickListener(view -> {
             Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
             startActivity(intent);
+            finish();
         });
     }
 

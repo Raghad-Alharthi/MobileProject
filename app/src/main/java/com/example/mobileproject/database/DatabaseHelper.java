@@ -47,9 +47,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "total REAL NOT NULL, " +
                     "customer_id INTEGER NOT NULL, " +
                     "date TEXT NOT NULL, " +
-                    "city TEXT NOT NULL CHECK(city IN ('Dammam', 'Al-Ahsa', 'Al-Khobar', 'Al-Dhahran', 'Al-Qatif')), " +
-                    "payment TEXT CHECK(payment IN ('MADA', 'ApplePay')) NOT NULL, " +
+                    "latitude REAL NOT NULL, " +
+                    "longitude REAL NOT NULL, " +
                     "FOREIGN KEY(customer_id) REFERENCES users(_id));";
+
 
     private static final String ORDER_ITEMS_TABLE_CREATE =
             "CREATE TABLE order_items (" +
@@ -382,6 +383,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
+    // Add an item to the order_items table
     public void addOrderItem(int orderId, int productId, int quantity) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -393,20 +395,122 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-
-    public long addOrder(int userId, double total, String date,String city, String paymentMethod) {
+    // Add an order to the orders table
+    public long addOrder(int userId, double total, String date, double latitude, double longitude) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("customer_id", userId);
         values.put("total", total);
         values.put("date", date); // Store current timestamp as the order date
-        values.put("city", city);
-        values.put("payment", paymentMethod);
+        values.put("latitude", latitude); // Save latitude
+        values.put("longitude", longitude); // Save longitude
 
         long orderId = db.insert("orders", null, values);
         db.close();
         return orderId; // Return the newly created order ID
     }
+
+    // Get all orders for a specific user
+    public Cursor getUserOrders(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(
+                "SELECT * FROM orders WHERE customer_id = ? ORDER BY date DESC",
+                new String[]{String.valueOf(userId)}
+        );
+    }
+
+    // Get order details
+    public Cursor getOrderDetails(int orderId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM orders WHERE _id = ?", new String[]{String.valueOf(orderId)});
+    }
+
+    // Get items for a specific order
+    public Cursor getOrderItems(int orderId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(
+                "SELECT oi.quantity, p.name, p.price " +
+                        "FROM order_items oi " +
+                        "JOIN plants p ON oi.product_id = p._id " +
+                        "WHERE oi.order_id = ?",
+                new String[]{String.valueOf(orderId)}
+        );
+    }
+
+    // Add a new plant to the database
+    public long addPlant(String name, String category, double price, int quantity) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("category", category);
+        values.put("price", price);
+        values.put("quantity_available", quantity);
+
+        long result = db.insert("plants", null, values); // Replace "plants" with your table name if different
+        db.close();
+        return result; // Returns the row ID of the newly inserted row
+    }
+    // Get all plants from the database
+    public List<Plant> getAllPlants() {
+        List<Plant> plants = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM plants", null); // Replace "plants" with your table name
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+                double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
+                int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity_available"));
+
+                // Add plant to the list
+                plants.add(new Plant(id, name, category, "", price, quantity, null));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return plants;
+    }
+    // Get plant details by ID
+    public Plant getPlantById(int plantId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM plants WHERE _id = ?", new String[]{String.valueOf(plantId)});
+
+        Plant plant = null;
+        if (cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+            double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
+            int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity_available"));
+
+            plant = new Plant(id, name, category, "", price, quantity, null);
+        }
+        cursor.close();
+        db.close();
+        return plant;
+    }
+    // Update an existing plant
+    public int updatePlant(int plantId, String name, String category, double price, int quantity) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("category", category);
+        values.put("price", price);
+        values.put("quantity_available", quantity);
+
+        int rowsAffected = db.update("plants", values, "_id = ?", new String[]{String.valueOf(plantId)});
+        db.close();
+        return rowsAffected; // Returns the number of rows affected
+    }
+    public boolean deletePlant(int plantId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsDeleted = db.delete("plants", "_id = ?", new String[]{String.valueOf(plantId)});
+        db.close();
+        return rowsDeleted > 0; // Return true if at least one row was deleted
+    }
+
 
 
 

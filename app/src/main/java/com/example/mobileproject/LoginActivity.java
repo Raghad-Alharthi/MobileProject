@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                     if ("admin".equals(role)) {
                         // Redirect to Admin Homepage
                         Toast.makeText(LoginActivity.this, "Admin Login Successful", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, AdminHomepageActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, AdminManageItemsActivity.class);
                         startActivity(intent);
                         finish(); // Close LoginActivity
                     } else if ("user".equals(role)) {

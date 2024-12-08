@@ -2,20 +2,28 @@ package com.example.mobileproject;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.mobileproject.database.DatabaseHelper;
 import com.example.mobileproject.models.CartItem;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,8 +31,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class CheckoutActivity extends AppCompatActivity {
-    private Spinner citySpinner, paymentMethodSpinner;
+public class CheckoutActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    private GoogleMap mMap;
+    private LatLng selectedLocation;
     private Button btnConfirmOrder;
     private DatabaseHelper databaseHelper;
 
@@ -36,12 +46,13 @@ public class CheckoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
+        // Back Button
         ImageButton backBtn = findViewById(R.id.backBtn);
-        backBtn.setOnClickListener((view -> {
+        backBtn.setOnClickListener(view -> {
             Intent intent = new Intent(CheckoutActivity.this, HomeActivity.class);
             startActivity(intent);
             finish();
-        }));
+        });
 
         // Initialize DatabaseHelper
         databaseHelper = new DatabaseHelper(this);
@@ -52,48 +63,49 @@ public class CheckoutActivity extends AppCompatActivity {
 
         if (userId == -1) {
             Toast.makeText(this, "User not logged in. Redirecting...", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
 
-        // Initialize Views
-        citySpinner = findViewById(R.id.citySpinner);
-        paymentMethodSpinner = findViewById(R.id.paymentMethodSpinner);
-        btnConfirmOrder = findViewById(R.id.btncheckout);
 
-        // Populate Spinners
-        setupSpinners();
 
-        // Fetch Cart Items
+        // Initialize the map fragment
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+
+        // Confirm Order Button
+        btnConfirmOrder = findViewById(R.id.btncheckoutConfirm);
         cartItems = fetchCartItems();
 
-        // Handle Confirm Order Button
-        btnConfirmOrder.setOnClickListener(view -> confirmOrder());
+        btnConfirmOrder.setOnClickListener(view -> {
+            if (selectedLocation != null) {
+                confirmOrder(selectedLocation.latitude, selectedLocation.longitude);
+            } else {
+                Toast.makeText(this, "Please select a location on the map", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void setupSpinners() {
-        // Cities
-        List<String> cities = new ArrayList<>();
-        cities.add("Dammam");
-        cities.add("Al-Ahsa");
-        cities.add("Al-Khobar");
-        cities.add("Al-Dhahran");
-        cities.add("Al-Qatif");
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap = googleMap;
 
-        ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cities);
-        cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        citySpinner.setAdapter(cityAdapter);
+        // Default location (e.g., Dammam)
+        LatLng defaultLocation = new LatLng(26.4207, 50.0888);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 10));
 
-        // Payment Methods
-        List<String> paymentMethods = new ArrayList<>();
-        paymentMethods.add("MADA");
-        paymentMethods.add("ApplePay");
-
-        ArrayAdapter<String> paymentAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, paymentMethods);
-        paymentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        paymentMethodSpinner.setAdapter(paymentAdapter);
+        // Add marker on map click
+        mMap.setOnMapClickListener(latLng -> {
+            mMap.clear(); // Clear previous markers
+            Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title("Selected Location"));
+            if (marker != null) marker.showInfoWindow();
+            selectedLocation = latLng;
+        });
     }
-
 
     private List<CartItem> fetchCartItems() {
         List<CartItem> items = new ArrayList<>();
@@ -106,7 +118,7 @@ public class CheckoutActivity extends AppCompatActivity {
                 double plantPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("plant_price"));
                 int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("cart_quantity"));
 
-                // Convert image BLOB to Bitmap (if needed)
+                // Convert image BLOB to Bitmap
                 byte[] imageBlob = cursor.getBlob(cursor.getColumnIndexOrThrow("plant_image"));
                 Bitmap plantImage = BitmapFactory.decodeByteArray(imageBlob, 0, imageBlob.length);
 
@@ -117,21 +129,7 @@ public class CheckoutActivity extends AppCompatActivity {
         return items;
     }
 
-    private void confirmOrder() {
-        // Validate selections
-        String selectedCity = citySpinner.getSelectedItem().toString();
-        String selectedPaymentMethod = paymentMethodSpinner.getSelectedItem().toString();
-
-        if (selectedCity.isEmpty() || selectedPaymentMethod.isEmpty()) {
-            Toast.makeText(this, "Please select both city and payment method.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (cartItems.isEmpty()) {
-            Toast.makeText(this, "Your cart is empty.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+    private void confirmOrder(double latitude, double longitude) {
         // Get current date
         String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
@@ -142,7 +140,7 @@ public class CheckoutActivity extends AppCompatActivity {
         }
 
         // Save Order
-        long orderId = databaseHelper.addOrder(userId, totalPrice, currentDate, selectedCity, selectedPaymentMethod);
+        long orderId = databaseHelper.addOrder(userId, totalPrice, currentDate, latitude, longitude);
 
         if (orderId != -1) {
             // Save each cart item as order item

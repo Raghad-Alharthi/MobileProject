@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="0dp"
     android:paddingEnd="15dp">
 
-    <!-- Background Card -->
+    <!-- RecyclerView to Display Items -->
+
     <View
         android:id="@+id/centerView5"
         android:layout_width="379dp"
@@ -23,7 +24,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.498" />
 
-    <!-- Header Section -->
+    <!-- Total Price and Checkout Button -->
+
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="410dp"
@@ -40,20 +42,22 @@
             android:id="@+id/backBtn"
             android:layout_width="66dp"
             android:layout_height="match_parent"
+            android:layout_gravity="fill"
             android:background="#D5FFFFFF"
+            android:cropToPadding="false"
             android:paddingLeft="10dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/baseline_home_filled_24" />
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="0dp"
+            android:layout_width="254dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:fontFamily="@font/yantramanav_bold"
             android:gravity="center"
             android:paddingTop="8dp"
-            android:text="Cart"
+            android:text="History"
             android:textColor="#414536"
             android:textSize="24sp" />
 
@@ -64,45 +68,28 @@
             app:srcCompat="@drawable/img_1" />
     </LinearLayout>
 
-    <!-- Dropdown Section -->
-
-    <!-- Confirm Order Button -->
-    <LinearLayout
-        android:id="@+id/dropdownSection"
-        android:layout_width="360dp"
-        android:layout_height="295dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/btncheckoutConfirm"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/OrderRV"
+        android:layout_width="381dp"
+        android:layout_height="624dp"
+        android:layout_marginTop="62dp"
+        android:padding="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
-
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="339dp"
-            android:layout_height="220dp" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btncheckoutConfirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="121dp"
-        android:layout_marginEnd="127dp"
-        android:layout_marginBottom="36dp"
-        android:backgroundTint="#000000"
-        android:fontFamily="@font/yantramanav_medium"
-        android:gravity="center"
-        android:text="Confirm Order"
-        android:textColor="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/centerView5"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/centerView5" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,11 +26,17 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.ViewHolder> 
     private List<Plant> plantList;
     private final Context context;
     private final DatabaseHelper databaseHelper;
+    private OnPlantClickListener onPlantClickListener;
 
-    public PlantAdapter(List<Plant> plantList, Context context, DatabaseHelper databaseHelper) {
+    public PlantAdapter(List<Plant> plantList, Context context, DatabaseHelper databaseHelper, OnPlantClickListener onPlantClickListener) {
         this.plantList = plantList;
         this.context = context;
         this.databaseHelper = databaseHelper;
+        this.onPlantClickListener = onPlantClickListener;
+    }
+
+    public interface OnPlantClickListener {
+        void onPlantClick(Plant plant);
     }
 
     public void updatePlants(List<Plant> newPlantList) {
@@ -60,6 +66,8 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.ViewHolder> 
             Bitmap bitmap = BitmapFactory.decodeByteArray(imageBlob, 0, imageBlob.length);
             holder.plantImageView.setImageBitmap(bitmap);
         }
+
+        holder.itemView.setOnClickListener(v -> onPlantClickListener.onPlantClick(plant));
 
         // Handle Add to Cart click
         holder.addToCartIcon.setOnClickListener(v -> {

@@ -1,12 +1,19 @@
 package com.example.mobileproject;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -20,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mobileproject.adapters.PlantAdapter;
 import com.example.mobileproject.database.DatabaseHelper;
 import com.example.mobileproject.models.Plant;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,13 +63,19 @@ public class HomeActivity extends AppCompatActivity {
 
         // Load default plants (Indoor)
         plantList = dbHelper.getIndoorPlants();
-        adapter = new PlantAdapter(plantList, this, dbHelper);
+        adapter = new PlantAdapter(plantList, this, dbHelper, this::showPlantDetailsPopup);
         recyclerView.setAdapter(adapter);
 
         // Cart button click listener
         ImageView cart = findViewById(R.id.CartIcon);
         cart.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, CartActivity.class);
+            startActivity(intent);
+        });
+
+        ImageView history = findViewById(R.id.historyIcon);
+        history.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, HistoryActivity.class);
             startActivity(intent);
         });
 
@@ -82,5 +96,49 @@ public class HomeActivity extends AppCompatActivity {
             }
             adapter.updatePlants(updatedList); // Update RecyclerView data
         });
+    }
+
+    private void showPlantDetailsPopup(Plant plant) {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_plant_details);
+
+        TextView plantName = dialog.findViewById(R.id.plant_name);
+        TextView plantDes = dialog.findViewById(R.id.plant_des);
+        TextView plantPrice = dialog.findViewById(R.id.plant_price);
+        ImageView plantImage = dialog.findViewById(R.id.plant_image);
+        //TextView quantityInput = dialog.findViewById(R.id.quantity_input);
+        Button addToCartButton = dialog.findViewById(R.id.add_to_cart_button);
+//        Button increaseQuantity = dialog.findViewById(R.id.btnIncrease2);
+//        Button decreaseQuantity = dialog.findViewById(R.id.btnDecrease2);
+
+        // Populate plant details
+        plantName.setText(plant.getName());
+        plantDes.setText(plant.getDescription());
+        plantPrice.setText(String.format("SR %.2f", plant.getPrice()));
+        byte[] imageBlob = plant.getImageBlob();
+        if (imageBlob != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBlob, 0, imageBlob.length);
+            plantImage.setImageBitmap(bitmap);
+        }
+
+
+
+
+        // Handle "Add to Cart" button
+        addToCartButton.setOnClickListener(v -> {
+
+                SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
+                int userId = sharedPreferences.getInt("user_id", -1);
+                if (userId != -1) {
+                    dbHelper.addToCart(userId, plant.getId(), 1);
+                    Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+                }
+
+                dialog.dismiss();
+        });
+
+        dialog.show();
     }
 }

@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MobileProject"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD-KAIuLVx38fKFFx0e_sjw4qYnh4abad8"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -42,7 +45,6 @@
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".NewPasswordActivity" />
         <activity android:name=".VerifyCodeActivity" />
-        <activity android:name=".AdminHomepageActivity" />
         <activity android:name=".CheckoutActivity" />
 
 

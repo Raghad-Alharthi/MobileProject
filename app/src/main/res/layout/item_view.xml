@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/imageview"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:layout_toEndOf="@id/imageview"
+        android:textColor="@color/black"
+        tools:text="Name" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/price"
+        android:layout_toEndOf="@id/imageview"
+        android:layout_below="@id/name"
+        android:textColor="@color/black"
+        tools:text="Price"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/quantity"
+        android:layout_toEndOf="@id/imageview"
+        android:layout_below="@id/price"
+        android:textColor="@color/black"
+        tools:text="Quantity"/>
+
+    <ImageView
+        android:id="@+id/edit_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignBaseline="@id/name"
+        android:layout_marginStart="300dp"
+        app:srcCompat="@drawable/baseline_edit_24" />
+
+    <ImageView
+        android:id="@+id/delete_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignBaseline="@id/name"
+        android:layout_marginStart="350dp"
+        app:srcCompat="@drawable/baseline_delete_24" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/imageview"
+        android:layout_marginTop="10dp"
+        android:background="#DAD808"/>
+
+
+</RelativeLayout>
